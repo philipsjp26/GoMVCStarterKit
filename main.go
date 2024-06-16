@@ -1,0 +1,5 @@
+package gomvcstarterkit
+
+func main() {
+
+}
