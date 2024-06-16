@@ -1,7 +1,7 @@
 
 start:
 	@echo "Starting apps..."
-	@go run main.go
+	@go run main.go http
 
 install:
 	@echo "Installing ..."

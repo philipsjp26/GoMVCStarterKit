@@ -21,7 +21,7 @@ func Start() {
 			},
 		},
 		{
-			Use:   "HTTP Server",
+			Use:   "http",
 			Short: "Run HTTP Server",
 			Run: func(cmd *cobra.Command, args []string) {
 				server.Http()
