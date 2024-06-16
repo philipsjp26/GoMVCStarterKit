@@ -1,0 +1,18 @@
+app:
+  name: "MVC Starter Kit"
+  port: 0000
+  env: "dev" # dev || stg || prod
+
+database:
+  username: ""
+  password: ""
+  hostname: ""
+  port: 0000
+  name: ""
+  driver: "" # postgres / mysql
+  charset: "utf8"
+  timezone: "Asia/Jakarta"
+  read_timeout: 15 # second
+  write_timeout: 15 # second
+  max_idle_conn: 10
+  max_open_conn: 10

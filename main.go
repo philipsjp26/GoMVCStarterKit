@@ -37,6 +37,7 @@ func main() {
 	// Routes
 	routes.SetupRoutes(app)
 
+	// Server
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	defer stop()
 	go func() {
