@@ -24,7 +24,16 @@ func Migrate() {
 	args := flags.Args()
 	cfg := config.NewEnv()
 
-	// fmt.Println(args[0]) // create ${filename}
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("failed to get current working directory: %v", err)
+	}
+	migrationsDir := filepath.Join(wd, "database/migrations")
+	m, err := migrate.New("file://"+migrationsDir, fmt.Sprintf("postgres://%s:%s@%s:%v/%s?sslmode=disable",
+		cfg.Database.Username, cfg.Database.Password, cfg.Database.Hostname, cfg.Database.Port, cfg.Database.Name))
+	if err != nil {
+		log.Fatal("error : ", err)
+	}
 	switch args[0] {
 	case "create":
 		migrationName := args[1]
@@ -35,23 +44,15 @@ func Migrate() {
 		createFile(downFileName)
 		fmt.Println("Success created migrations")
 	case "up":
-		wd, err := os.Getwd()
-		if err != nil {
-			log.Fatalf("failed to get current working directory: %v", err)
-		}
-		migrationsDir := filepath.Join(wd, "database/migrations")
-
-		m, err := migrate.New("file://"+migrationsDir, fmt.Sprintf("postgres://%s:%s@%s:%v/%s?sslmode=disable",
-			cfg.Database.Username, cfg.Database.Password, cfg.Database.Hostname, cfg.Database.Port, cfg.Database.Name))
-		if err != nil {
-			log.Fatal("error : ", err)
-		}
 		if err = m.Up(); err != nil {
-			log.Fatal("apa error : ", err)
+			log.Fatalf("Error migrate up got err :%v : ", err)
 		}
 		fmt.Println("success migrate")
 	case "down":
-		// TODO: Migrate down
+		if err = m.Down(); err != nil {
+			log.Fatalf("Error migrate down got :%v", err)
+		}
+
 	}
 }
 
