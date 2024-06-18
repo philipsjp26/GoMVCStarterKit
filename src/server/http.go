@@ -2,6 +2,7 @@ package server
 
 import (
 	"GoMVCStarterKit/config"
+	"GoMVCStarterKit/database/connection"
 	"GoMVCStarterKit/src/routes"
 	"GoMVCStarterKit/src/utils/logger"
 	"context"
@@ -31,10 +32,14 @@ func Http() {
 	app.Use(helmet.New())
 	app.Use(recover.New(recover.Config{EnableStackTrace: true}))
 
+	// Init Database
+	conn := connection.NewSQLDBConn(cfg.Database.Driver)
+	c := conn.Connection(cfg)
+	defer c.Close()
 	// Logger
 	logger.RegisterLogger(cfg)
 	// Routes
-	routes.SetupRoutes(app)
+	routes.SetupRoutes(app, c)
 
 	// Server
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)

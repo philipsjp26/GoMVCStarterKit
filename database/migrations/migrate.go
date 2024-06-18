@@ -34,6 +34,7 @@ func Migrate() {
 	if err != nil {
 		log.Fatal("error : ", err)
 	}
+
 	switch args[0] {
 	case "create":
 		migrationName := args[1]
@@ -46,6 +47,7 @@ func Migrate() {
 	case "up":
 		if err = m.Up(); err != nil {
 			log.Fatalf("Error migrate up got err :%v : ", err)
+			cleanDirtySchema(m)
 		}
 		fmt.Println("success migrate")
 	case "down":
@@ -53,6 +55,21 @@ func Migrate() {
 			log.Fatalf("Error migrate down got :%v", err)
 		}
 
+	}
+}
+
+func cleanDirtySchema(m *migrate.Migrate) {
+	version, dirty, err := m.Version()
+	if err != nil {
+		log.Fatalf("error getting current version :%v", err)
+	}
+	if dirty {
+		fmt.Printf("Dirty migrations detected :%v", version)
+
+		if err = m.Force(int(version)); err != nil {
+			log.Fatalf("error forcing version: %v", err)
+		}
+		fmt.Printf("forced database version : %v", version)
 	}
 }
 
